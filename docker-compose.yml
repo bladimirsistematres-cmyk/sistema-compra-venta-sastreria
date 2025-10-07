@@ -1,0 +1,12 @@
+services:
+  sistema-inventario-back:
+    build: sistema-inventario-back
+    mem_limit: 512m
+    ports:
+      - "8080:8080"
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:postgresql://switchyard.proxy.rlwy.net:52096/railway
+      SPRING_DATASOURCE_USERNAME: postgres
+      SPRING_DATASOURCE_PASSWORD: bqxAxSJQqiaTsFvBSAUPhboWlUddOmso
+      SPRING_JPA_HIBERNATE_DDL_AUTO: update
+    restart: always
