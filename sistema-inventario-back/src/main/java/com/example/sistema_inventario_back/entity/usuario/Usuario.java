@@ -21,7 +21,19 @@ public class Usuario implements UserDetails {
     private Integer id_usuario;
 
     @NonNull
-    private String nombre_usuario;
+    private String nombres;
+
+    @NonNull
+    private String apellidoPaterno;
+
+    @NonNull
+    private String apellidoMaterno;
+
+    @NonNull
+    private Boolean estado = true;
+
+    @NonNull
+    private String nombreUsuario;
 
     @NonNull
     private String carnetIdentidad;
@@ -43,26 +55,26 @@ public class Usuario implements UserDetails {
 
     @Override
     public String getUsername() {
-        return carnetIdentidad;
+        return nombreUsuario;
     }
 
     @Override
     public boolean isAccountNonExpired() {
-        return UserDetails.super.isAccountNonExpired();
+        return true;
     }
 
     @Override
     public boolean isAccountNonLocked() {
-        return UserDetails.super.isAccountNonLocked();
+        return estado;
     }
 
     @Override
     public boolean isCredentialsNonExpired() {
-        return UserDetails.super.isCredentialsNonExpired();
+        return true;
     }
 
     @Override
     public boolean isEnabled() {
-        return UserDetails.super.isEnabled();
+        return estado;
     }
 }

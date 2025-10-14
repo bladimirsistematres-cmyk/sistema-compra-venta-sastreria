@@ -23,7 +23,7 @@ public class AppConfig {
 
     @Bean
     public UserDetailsService userDetailsService(){
-        return username -> userRepository.findByCarnetIdentidad(username)
+        return username -> userRepository.findByNombreUsuario(username)
                 .orElseThrow(() -> new UsernameNotFoundException("No se encuentra registrado el usuario"));
     }
 

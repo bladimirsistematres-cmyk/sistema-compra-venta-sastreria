@@ -32,7 +32,7 @@ public class AuthServicelmpl implements AuthService{
     @Override
     public AuthenticationResponse register(RegisterRequest request){
         var usuario = Usuario.builder()
-                .nombre_usuario(request.getNombre_usuario())
+                .nombreUsuario(request.getNombre_usuario())
                 .carnetIdentidad(request.getCarnetIdentidad())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(Role.ADMIN)
@@ -50,12 +50,12 @@ public class AuthServicelmpl implements AuthService{
     public AuthenticationResponse authenticate(AuthenticationRequest request){
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
-                        request.getCarnetIdentidad(),
+                        request.getNombreUsuario(),
                         request.getPassword()
                 )
         );
 
-        var usuario = userRepository.findByCarnetIdentidad(request.getCarnetIdentidad())
+        var usuario = userRepository.findByNombreUsuario(request.getNombreUsuario())
                 .orElseThrow(() -> new IllegalArgumentException("Usuario no registrado"));
 
         var jwtToken = jwtService.generateToken(usuario);

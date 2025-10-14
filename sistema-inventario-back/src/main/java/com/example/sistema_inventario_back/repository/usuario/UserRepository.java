@@ -8,5 +8,5 @@ import java.util.Optional;
 
 public interface UserRepository extends CrudRepository<Usuario, Integer> {
     @Transactional
-    Optional<Usuario> findByCarnetIdentidad(String carnetIdentidad);
+    Optional<Usuario> findByNombreUsuario(String nombre_usuario);
 }

@@ -123,7 +123,7 @@ public class CompraServicelmpl implements CompraService {
     }
 
     private Compra matToEntity(CompraRequestDTO dto, String username){
-        Usuario usuario = userRepository.findByCarnetIdentidad(username)
+        Usuario usuario = userRepository.findByNombreUsuario(username)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
         Proveedor proveedor = proveedorRepository.findById(dto.getIdProveedor())
@@ -171,7 +171,7 @@ public class CompraServicelmpl implements CompraService {
 
         // Usuario
         responseDTO.setIdUsuario(compra.getUsuario().getId_usuario());
-        responseDTO.setNombreUsuario(compra.getUsuario().getNombre_usuario());
+        responseDTO.setNombreUsuario(compra.getUsuario().getNombreUsuario());
 
         CompraDetalle detalle = compra.getCompraDetalle();
         CompraDetalleResponseDTO detalleResponse = new CompraDetalleResponseDTO();

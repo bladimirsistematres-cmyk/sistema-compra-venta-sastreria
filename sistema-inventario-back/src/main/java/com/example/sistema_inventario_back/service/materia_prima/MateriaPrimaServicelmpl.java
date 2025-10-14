@@ -68,7 +68,7 @@ public class MateriaPrimaServicelmpl implements MateriaPrimaService {
         Proveedor proveedor = proveedorRepository.findById(dto.getIdProveedor())
                 .orElseThrow(() -> new RuntimeException("Proveedor no encontrado"));
 
-        Usuario usuario = userRepository.findByCarnetIdentidad(username)
+        Usuario usuario = userRepository.findByNombreUsuario(username)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
         MateriaPrima materiaPrima = new MateriaPrima();
@@ -92,7 +92,7 @@ public class MateriaPrimaServicelmpl implements MateriaPrimaService {
         response.setNombreMateriaPrima(materiaPrima.getNombreMateriaPrima());
         response.setStockActual(materiaPrima.getStockActual());
         response.setDescripcion(materiaPrima.getDescripcion());
-        response.setUsuario(materiaPrima.getUsuario().getNombre_usuario());
+        response.setUsuario(materiaPrima.getUsuario().getNombreUsuario());
         response.setProveedor(materiaPrima.getProveedor().getNombreComercial());
         response.setIdProveedor(materiaPrima.getProveedor().getIdProveedor());
 
