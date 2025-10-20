@@ -1,13 +1,14 @@
 package com.example.sistema_inventario_back.controller.usuario;
 
-import com.example.sistema_inventario_back.dto.usuario.UsuarioUpdateDTO;
-import com.example.sistema_inventario_back.dto.usuario.UsuarioUpdateNombreDTO;
-import com.example.sistema_inventario_back.dto.usuario.UsuarioUpdatePasswordDTO;
+import com.example.sistema_inventario_back.dto.usuario.*;
 import com.example.sistema_inventario_back.entity.usuario.Usuario;
 import com.example.sistema_inventario_back.service.config_service.UsuarioService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.Map;
@@ -18,6 +19,13 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class UsuarioController {
     private final UsuarioService usuarioService;
+
+    // Controlador para buscar un usuario mediante su id
+    @GetMapping("/buscarUsuario/{id}")
+    public ResponseEntity<Usuario> getUsuarioById(@PathVariable Integer id){
+        Usuario usuario = usuarioService.getUsuarioById(id);
+        return ResponseEntity.ok(usuario);
+    }
 
     // Controlador para listar a todos los usuarios
     @GetMapping("/listarUsuarios")
@@ -36,23 +44,24 @@ public class UsuarioController {
 
     // Controlador para actualizar el nombre de usuario
     @PutMapping("/updateNombreUsuario/{id}")
-    public ResponseEntity<Usuario> cambiarNombreUsuario(
+    public ResponseEntity<JwtActualizacionResponse> cambiarNombreUsuario(
             @PathVariable Integer id,
-            @RequestBody @Valid UsuarioUpdateNombreDTO dto
+            @RequestBody @Valid UsuarioUpdateNombreDTO dto,
+            Authentication authentication
             ){
+        UserDetails userDetails = (UserDetails) authentication.getPrincipal();
         return ResponseEntity.ok(
-                usuarioService.actualizarNombreUsuario(id, dto.getNuevoNombreUsuario())
+                usuarioService.actualizarNombreUsuario(id, dto.getNuevoNombreUsuario(), userDetails)
         );
     }
 
     // Controlador para cambiar el nombre de usuario.
     @PutMapping("/updatePassword/{id}")
-    public ResponseEntity<Usuario> cambiarContrasenia(
+    public ResponseEntity<TokenResponse> cambiarContrasenia(
             @PathVariable Integer id,
             @RequestBody @Valid UsuarioUpdatePasswordDTO dto
             ){
-        return ResponseEntity.ok(
-                usuarioService.actualizarPassword(id, dto.getActualPassword(), dto.getNuevoPassword())
-        );
+        TokenResponse response = usuarioService.actualizarPassword(id, dto.getActualPassword(), dto.getNuevoPassword());
+        return ResponseEntity.ok(response);
     }
 }

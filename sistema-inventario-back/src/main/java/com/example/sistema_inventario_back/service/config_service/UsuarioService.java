@@ -1,8 +1,11 @@
 package com.example.sistema_inventario_back.service.config_service;
 
+import com.example.sistema_inventario_back.dto.usuario.JwtActualizacionResponse;
+import com.example.sistema_inventario_back.dto.usuario.TokenResponse;
 import com.example.sistema_inventario_back.dto.usuario.UsuarioUpdateDTO;
 import com.example.sistema_inventario_back.entity.usuario.Usuario;
 import com.example.sistema_inventario_back.repository.usuario.UserRepository;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -11,10 +14,18 @@ import org.springframework.stereotype.Service;
 public class UsuarioService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JwtService jwtService;
 
-    public UsuarioService(UserRepository userRepository, PasswordEncoder passwordEncoder){
+    public UsuarioService(UserRepository userRepository, PasswordEncoder passwordEncoder, JwtService jwtService){
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
+        this.jwtService = jwtService;
+    }
+
+    // Servicio para buscar un usuario por el ID
+    public Usuario getUsuarioById(Integer id){
+        return userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Usuario no encontrado con id: " + id));
     }
 
     // Servicio para listar a todos los usuarios del sistema.
@@ -36,16 +47,20 @@ public class UsuarioService {
     }
 
     // Servicio para cambiar el nombre de usuario
-    public Usuario actualizarNombreUsuario(Integer id, String nuevoNombre){
+    public JwtActualizacionResponse actualizarNombreUsuario(Integer id, String nuevoNombre, UserDetails userDetails){
         Usuario usuario = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
         usuario.setNombreUsuario(nuevoNombre);
-        return userRepository.save(usuario);
+        userRepository.save(usuario);
+
+        String token = jwtService.generateToken(userDetails);
+
+        return new JwtActualizacionResponse(token, usuario.getNombreUsuario());
     }
 
     // Servicio para cambiar la contraseña
-    public Usuario actualizarPassword(Integer id, String actualPassword, String nuevoPassword){
+    public TokenResponse actualizarPassword(Integer id, String actualPassword, String nuevoPassword){
         Usuario usuario = userRepository.findById(id)
                 .orElseThrow(() -> new RuntimeException("Usuario no encontrado"));
 
@@ -54,6 +69,10 @@ public class UsuarioService {
         }
 
         usuario.setPassword(passwordEncoder.encode(nuevoPassword));
-        return userRepository.save(usuario);
+        userRepository.save(usuario);
+
+        String newToken = jwtService.generateToken(usuario);
+
+        return new TokenResponse(newToken, usuario);
     }
 }
