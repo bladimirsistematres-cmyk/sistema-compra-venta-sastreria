@@ -14,7 +14,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
 @Service
-@RequiredArgsConstructor
+@RequiredArgsConstructor    
 public class AuthServicelmpl implements AuthService{
 
     @Autowired
@@ -32,6 +32,10 @@ public class AuthServicelmpl implements AuthService{
     @Override
     public AuthenticationResponse register(RegisterRequest request){
         var usuario = Usuario.builder()
+                .nombres(request.getNombres())
+                .apellidoPaterno(request.getApellidoPaterno())
+                .apellidoMaterno(request.getApellidoMaterno())
+                .estado(request.getEstado())
                 .nombreUsuario(request.getNombre_usuario())
                 .carnetIdentidad(request.getCarnetIdentidad())
                 .password(passwordEncoder.encode(request.getPassword()))
